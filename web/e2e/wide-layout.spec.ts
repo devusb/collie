@@ -32,3 +32,18 @@ test("on Off the same window keeps the phone pane screen", async ({ page }) => {
   await expect(page.getByRole("button", { name: en["chat.switcher.aria"] })).toBeVisible();
   await expect(page.locator('[data-slot="wide-layout"]')).toHaveCount(0);
 });
+
+test("an absolutely placed box in the sidebar list does not make the page scroll", async ({ page }) => {
+  await page.setViewportSize({ width: 820, height: 480 });
+  await page.goto("/pane/w1:p1");
+  const sidebar = page.getByRole("complementary", { name: en["wide.sidebar.label"] });
+  await expect(sidebar).toBeVisible();
+  // A row's `sr-only` label is absolutely placed; one far down the list stands in for it.
+  await sidebar.evaluate((aside) => {
+    const list = [...aside.querySelectorAll("div")].find((el) => getComputedStyle(el).overflowY === "auto");
+    const box = document.createElement("span");
+    box.style.cssText = "position:absolute;top:2000px;width:1px;height:1px";
+    list?.firstElementChild?.append(box);
+  });
+  expect(await page.evaluate(() => document.documentElement.scrollHeight)).toBe(480);
+});

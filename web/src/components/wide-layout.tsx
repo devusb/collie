@@ -434,7 +434,7 @@ export function WideLayout({ widthClass, paneId, scope, agent, focused, fold = "
         style={book && sidebarShown ? undefined : { width: sidebarShown ? SIDEBAR_WIDTH[widthClass] : RAIL_WIDTH }}
       >
         <SidebarTop open={sidebarShown} setMark={setMark} toggle={!book} />
-        <div {...hostProps} className="min-h-0 flex-1 overflow-y-auto [-webkit-touch-callout:none]">
+        <div {...hostProps} className="relative min-h-0 flex-1 overflow-y-auto [-webkit-touch-callout:none]">
           {sidebarShown ? (
             <SidebarList agent={agent} paneId={paneId} scope={scope} onSelect={goTo} />
           ) : (
